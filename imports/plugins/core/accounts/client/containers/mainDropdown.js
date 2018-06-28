@@ -1,18 +1,19 @@
 import { compose, withProps } from "recompose";
 import { Meteor } from "meteor/meteor";
-import { Accounts } from "meteor/accounts-base";
+// import { Accounts } from "meteor/accounts-base";
 import { Roles } from "meteor/alanning:roles";
 import { Session } from "meteor/session";
 import { registerComponent, composeWithTracker, withCurrentAccount } from "@reactioncommerce/reaction-components";
 import { i18nextDep, i18next, Reaction, Logger } from "/client/api";
-import { Tags } from "/lib/collections";
+import { Accounts, Tags } from "/lib/collections";
 import { getUserAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 import MainDropdown from "../components/mainDropdown";
 
 function displayName(displayUser) {
   i18nextDep.depend();
 
-  const user = displayUser || Accounts.user();
+  const user = displayUser || Accounts.findOne({ userId: Reaction.userId });
+  console.log("displayName user", user);
 
   if (user) {
     if (user.name) {
@@ -90,12 +91,15 @@ function handleChange(event, value) {
   }
 }
 
-const composer = ({ currentAccount }, onData) => {
+const composer = (props, onData) => {
+  const currentAccount = Accounts.findOne({ userId: Reaction.getUserId() });
+  console.log(currentAccount);
   const userImage = getUserAvatar(currentAccount);
   const userName = displayName(currentAccount);
   const adminShortcuts = getAdminShortcutIcons();
 
   onData(null, {
+    currentAccount,
     adminShortcuts,
     userImage,
     userName
@@ -111,13 +115,13 @@ const handlers = {
 };
 
 registerComponent("MainDropdown", MainDropdown, [
-  withCurrentAccount,
+  // withCurrentAccount,
   withProps(handlers),
   composeWithTracker(composer, false)
 ]);
 
 export default compose(
-  withCurrentAccount,
+  // withCurrentAccount,
   withProps(handlers),
   composeWithTracker(composer, false)
 )(MainDropdown);

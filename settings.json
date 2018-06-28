@@ -2,6 +2,7 @@
   "public": {
     "keycloakClientID" : "reaction-meteor-frontend",
     "keycloakServerUrl" : "http://localhost:8080/auth",
-    "keycloakRealm" : "default"
+    "keycloakRealm" : "default",
+    "REACTION_LOG_LEVEL": "DEBUG"
   }
 }

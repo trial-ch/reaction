@@ -13,6 +13,7 @@ import { Countries } from "/client/collections";
 import { localeDep } from "/client/modules/i18n";
 import { Packages, Shops, Accounts } from "/lib/collections";
 import { Router } from "/client/modules/router";
+import { getUserId } from "./helpers/globals";
 
 /**
  * Reaction core namespace for client code
@@ -202,7 +203,7 @@ export default {
    * @method
    * @memberof Core/Client
    * @param {String | Array} checkPermissions -String or Array of permissions if empty, defaults to "admin, owner"
-   * @param {String} checkUserId - userId, defaults to Meteor.userId()
+   * @param {String} checkUserId - userId, defaults to Reaction.userId()
    * @param {String} checkGroup group - default to shopId
    * @return {Boolean} Boolean - true if has permission
    */
@@ -217,7 +218,7 @@ export default {
 
     let permissions = ["owner"];
     let id = "";
-    const userId = checkUserId || Meteor.userId();
+    const userId = checkUserId || getUserId();
     //
     // local roleCheck function
     // is the bulk of the logic
@@ -273,7 +274,7 @@ export default {
     // in line 156 setTimeout
     //
     function validateUserId() {
-      if (Meteor.userId()) {
+      if (getUserId()) {
         Meteor.clearTimeout(id);
         Router.reload();
         return roleCheck();
@@ -370,7 +371,7 @@ export default {
   hasAdminAccess(shopId) {
     const adminPermissions = ["owner", "admin"];
     if (shopId) {
-      return this.hasPermission(adminPermissions, Meteor.userId(), shopId);
+      return this.hasPermission(adminPermissions, getUserId(), shopId);
     }
     return this.hasPermission(adminPermissions);
   },
@@ -399,7 +400,7 @@ export default {
    * @method
    * @memberof Core/Client
    */
-  getSellerShopId(userId = Meteor.userId(), noFallback = false) {
+  getSellerShopId(userId = getUserId(), noFallback = false) {
     if (userId) {
       const group = Roles.getGroupsForUser(userId, "admin")[0];
       if (group) {
@@ -446,7 +447,7 @@ export default {
       // the Accounts collection.
       const syncedPackages = ["reaction"];
       if (syncedPackages.indexOf(packageName) > -1) {
-        Accounts.update(Meteor.userId(), {
+        Accounts.update(getUserId(), {
           $set: {
             [`profile.preferences.${packageName}.${preference}`]: value
           }
@@ -724,7 +725,7 @@ export default {
     const groupPermissions = group.permissions;
 
     // granting invitation right for user with `owner` role in a shop
-    if (this.hasPermission(["owner"], Meteor.userId(), group.shopId)) {
+    if (this.hasPermission(["owner"], getUserId(), group.shopId)) {
       return true;
     }
 

@@ -5,6 +5,7 @@ import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
 import { SubsManager } from "meteor/meteorhacks:subs-manager";
 import Reaction from "./main";
+import { getUserId } from "./helpers/globals";
 
 export const Subscriptions = {};
 
@@ -12,7 +13,7 @@ export const Subscriptions = {};
 // See: https://github.com/kadirahq/subs-manager
 Subscriptions.Manager = new SubsManager();
 
-Subscriptions.Account = Subscriptions.Manager.subscribe("Accounts", Meteor.userId());
+Subscriptions.Account = Subscriptions.Manager.subscribe("Accounts", getUserId());
 
 /*
  * Reaction.session
@@ -82,8 +83,8 @@ Tracker.autorun(() => {
   Tracker.nonreactive(() => {
     sessionId = Session.get("sessionId");
   });
-  Subscriptions.Cart = Subscriptions.Manager.subscribe("Cart", sessionId, Meteor.userId());
-  Subscriptions.UserProfile = Meteor.subscribe("UserProfile", Meteor.userId());
+  Subscriptions.Cart = Subscriptions.Manager.subscribe("Cart", sessionId, getUserId());
+  Subscriptions.UserProfile = Meteor.subscribe("UserProfile", getUserId());
 });
 
 Tracker.autorun(() => {

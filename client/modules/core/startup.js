@@ -19,14 +19,14 @@ Meteor.startup(() => {
 
   // initialize anonymous guest users
   Tracker.autorun(() => {
-    const userId = Meteor.userId();
+    const userId = Reaction.getUserId();
 
     // Load data from Accounts collection into the localStorage
     Tracker.nonreactive(() => {
       // Don't load the data from Accounts Collection again when something changes
       // as we are already storing everything in the localStorage reactively
       try {
-        const user = AccountsCollection.findOne(userId);
+        const user = AccountsCollection.findOne({ userId });
         if (user && user.profile && user.profile.preferences) {
           Object.keys(user.profile.preferences).forEach((packageName) => {
             const packageSettings = user.profile.preferences[packageName];
@@ -66,24 +66,24 @@ Meteor.startup(() => {
       sessionId = store.get("Reaction.session");
     });
 
-    if (!userId) {
-      if (!loggingIn || typeof sessionId !== "string") {
-        if (!isLocalStorageAvailable() && readCookie(cookieName)) {
-          // If re-login through local storage fails, RC falls back
-          // to cookie-based login. E.g. Applies for Safari browser in
-          // incognito mode.
-          Accounts.loginWithToken(readCookie(cookieName));
-        } else {
-          Accounts.loginWithAnonymous();
-        }
-      }
-    }
+    // if (!userId) {
+    //   if (!loggingIn || typeof sessionId !== "string") {
+    //     if (!isLocalStorageAvailable() && readCookie(cookieName)) {
+    //       // If re-login through local storage fails, RC falls back
+    //       // to cookie-based login. E.g. Applies for Safari browser in
+    //       // incognito mode.
+    //       Accounts.loginWithToken(readCookie(cookieName));
+    //     } else {
+    //       Accounts.loginWithAnonymous();
+    //     }
+    //   }
+    // }
   });
 
   // Set up an autorun to get fine-grained reactivity on only the
   // user preferences
   Tracker.autorun(() => {
-    const userId = Meteor.userId();
+    const userId = Reaction.getUserId();
     if (!userId) return;
     const user = Meteor.users.findOne(userId, { fields: { profile: 1 } });
     userPrefs.set((user && user.profile && user.profile.preferences) || undefined);

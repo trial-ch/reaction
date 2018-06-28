@@ -6,6 +6,7 @@ import { Reaction, Logger } from "/client/api";
 import { Shops } from "/lib/collections";
 import { Router } from "../lib";
 import { initBrowserRouter } from "./browserRouter";
+import { Session } from "meteor/session";
 
 Meteor.startup(() => {
   window.keycloak = new window.Keycloak({
@@ -21,6 +22,13 @@ Meteor.startup(() => {
     .success((authenticated) => {
       if (authenticated) {
         localStorage.setItem("reaction_kc_token", keycloak.token);
+
+        keycloak.loadUserProfile().success((profile) => {
+          localStorage.setItem("reaction_kc_profile", JSON.stringify(profile));
+          Session.set("rc_userId", profile.attributes["reaction-meteor-id"][0]);
+        }).error(() => {
+          Logger.error("Failed to load profile");
+        });
       }
     })
     .error((error) => {
@@ -36,16 +44,20 @@ Meteor.startup(() => {
   // TODO: Revisit subscriptions manager usage and waiting for shops to exist client side before rendering.
   const primaryShopSub = Meteor.subscribe("PrimaryShop");
   const merchantShopSub = Meteor.subscribe("MerchantShops");
-  const packageSub = Meteor.subscribe("Packages");
+  const packageSub = Meteor.subscribe("Packages", Reaction.getShopId(), Reaction.getUserId());
 
   let isLoaded = false;
 
   Tracker.autorun(() => {
+    const accountSub = Meteor.subscribe("UserAccount", Reaction.getUserId());
+
+    console.log("auto runnning...");
     // initialize client routing
     if (
       primaryShopSub.ready() &&
       merchantShopSub.ready() &&
       packageSub.ready() &&
+      accountSub.ready() &&
       // In addition to the subscriptions, shopId must be defined before we proceed
       // to avoid conditions where the subscriptions may be ready, but the cached
       // shopId has yet been set.

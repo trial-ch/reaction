@@ -8,12 +8,12 @@ import { Reaction } from "/client/api";
  * @summary check current user hasPermission, uses [alanning:meteor-roles](http://alanning.github.io/meteor-roles/classes/Roles.html)
  * @example {{hasPermission admin userId}}
  * @param  {String|Array} "permissions"
- * @param  {String} checkUserId - optional Meteor.userId, default to current
+ * @param  {String} checkUserId - optional Reaction.userId, default to current
  * @return {Boolean}
  */
 Template.registerHelper("hasPermission", (permissions, options) => {
   // default to checking this.userId
-  const loggedInUser = Meteor.userId();
+  const loggedInUser = Reaction.userId();
   const shopId = Reaction.getShopId();
   // we don't necessarily need to check here
   // as these same checks and defaults are

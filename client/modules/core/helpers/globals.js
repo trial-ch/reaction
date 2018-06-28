@@ -7,6 +7,16 @@ import { Roles } from "meteor/alanning:roles";
 /* eslint "no-alert": 0 */
 
 /**
+ * @method userId
+ * @summary returns id linked to an Account doc
+ * @return {Object} String
+ */
+export function getUserId() {
+  const profile = JSON.parse(localStorage.getItem("reaction_kc_profile"));
+  return profile && profile.attributes["reaction-meteor-id"][0];
+}
+
+/**
  * @name toggleSession
  * @method
  * @memberof Helpers
@@ -61,7 +71,7 @@ export function getCardType(cardNumber) {
  * @name getGuestLoginState
  * @method
  * @memberof Helpers
- * @todo These should all be removed. PR's happily accepted.
+ * @todo These should all be removed. PR's happily accepted. TODO
  * @summary Determines if a guest checkout is enabled and the login state for users
  * @return {Boolean} true if authenticated user
  */

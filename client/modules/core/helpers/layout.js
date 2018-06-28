@@ -51,7 +51,7 @@ Template.registerHelper("reactionTemplate", (options) => {
     currentId = Template.currentData()._id;
   } else {
     const currentCart = Collections.Cart.findOne({
-      userId: Meteor.userId()
+      userId: Reaction.userId()
     });
     currentId = currentCart && currentCart._id;
   }
