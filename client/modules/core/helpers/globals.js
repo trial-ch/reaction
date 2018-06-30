@@ -12,8 +12,11 @@ import { Roles } from "meteor/alanning:roles";
  * @return {Object} String
  */
 export function getUserId() {
-  const profile = JSON.parse(localStorage.getItem("reaction_kc_profile"));
-  return profile && profile.attributes["reaction-meteor-id"][0];
+  const profileStr = localStorage.getItem("reaction_kc_profile");
+  const profile = profileStr && JSON.parse(profileStr);
+  return profile && profile.attributes &&
+    profile.attributes["reaction-meteor-id"] &&
+    profile.attributes["reaction-meteor-id"][0];
 }
 
 /**

@@ -4,9 +4,9 @@ import { Tracker } from "meteor/tracker";
 import { Accounts } from "meteor/accounts-base";
 import { Reaction, Logger } from "/client/api";
 import { Shops } from "/lib/collections";
+import { Session } from "meteor/session";
 import { Router } from "../lib";
 import { initBrowserRouter } from "./browserRouter";
-import { Session } from "meteor/session";
 
 Meteor.startup(() => {
   window.keycloak = new window.Keycloak({
@@ -25,10 +25,15 @@ Meteor.startup(() => {
 
         keycloak.loadUserProfile().success((profile) => {
           localStorage.setItem("reaction_kc_profile", JSON.stringify(profile));
+          console.log(profile.attributes["reaction-meteor-id"][0], "pid")
           Session.set("rc_userId", profile.attributes["reaction-meteor-id"][0]);
         }).error(() => {
           Logger.error("Failed to load profile");
         });
+      } else {
+        // handle unauth
+        localStorage.removeItem("reaction_kc_profile");
+        localStorage.removeItem("reaction_kc_token");
       }
     })
     .error((error) => {
@@ -49,7 +54,7 @@ Meteor.startup(() => {
   let isLoaded = false;
 
   Tracker.autorun(() => {
-    const accountSub = Meteor.subscribe("UserAccount", Reaction.getUserId());
+    const accountSub = Meteor.subscribe("UserAccount", Session.get("rc_userId"));
 
     console.log("auto runnning...");
     // initialize client routing
