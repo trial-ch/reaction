@@ -25,7 +25,6 @@ Meteor.startup(() => {
 
         keycloak.loadUserProfile().success((profile) => {
           localStorage.setItem("reaction_kc_profile", JSON.stringify(profile));
-          console.log(profile.attributes["reaction-meteor-id"][0], "pid")
           Session.set("rc_userId", profile.attributes["reaction-meteor-id"][0]);
         }).error(() => {
           Logger.error("Failed to load profile");
@@ -56,7 +55,6 @@ Meteor.startup(() => {
   Tracker.autorun(() => {
     const accountSub = Meteor.subscribe("UserAccount", Session.get("rc_userId"));
 
-    console.log("auto runnning...");
     // initialize client routing
     if (
       primaryShopSub.ready() &&

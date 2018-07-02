@@ -13,7 +13,6 @@ function displayName(displayUser) {
   i18nextDep.depend();
 
   const user = displayUser || Accounts.findOne({ userId: Reaction.userId });
-  console.log("displayName user", user);
 
   if (user) {
     if (user.name) {
@@ -93,7 +92,6 @@ function handleChange(event, value) {
 
 const composer = (props, onData) => {
   const currentAccount = Accounts.findOne({ userId: Reaction.getUserId() });
-  console.log(currentAccount);
   const userImage = getUserAvatar(currentAccount);
   const userName = displayName(currentAccount);
   const adminShortcuts = getAdminShortcutIcons();

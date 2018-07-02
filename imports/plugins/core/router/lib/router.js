@@ -346,9 +346,10 @@ Router.isActiveClassName = (routeName) => {
 function hasRoutePermission(route) {
   const routeName = route.name;
 
-  return routeName === "index" ||
-    routeName === "not-found" ||
-    Router.Reaction.hasPermission(route.permissions, Meteor.userId());
+  return true;
+    // routeName === "index" ||
+    // routeName === "not-found" ||
+    // Router.Reaction.hasPermission(route.permissions, Router.Reaction.getUserId());
 }
 
 
