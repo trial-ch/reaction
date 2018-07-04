@@ -196,7 +196,15 @@ export default {
   get state() {
     return reactionState;
   },
+  hasPermission(roles, userId, shopId) {
+    if (!Array.isArray(roles)) {
+      roles = [roles];
+    }
+    const userRoles = window.keycloak.realmAccess && window.keycloak.realmAccess.roles;
+    const found = Array.isArray(userRoles) && _.some(roles, (role) => _.includes(userRoles, role));
 
+    return found;
+  },
   /**
    * @name hasPermission
    * @summary client permissions checks. hasPermission exists on both the server and the client.
@@ -207,7 +215,7 @@ export default {
    * @param {String} checkGroup group - default to shopId
    * @return {Boolean} Boolean - true if has permission
    */
-  hasPermission(checkPermissions, checkUserId, checkGroup) {
+  _hasPermission(checkPermissions, checkUserId, checkGroup) {
     let group;
     // default group to the shop or global if shop isn't defined for some reason.
     if (checkGroup !== undefined && typeof checkGroup === "string") {

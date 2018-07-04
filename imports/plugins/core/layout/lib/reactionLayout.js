@@ -23,7 +23,7 @@ class ReactionLayout extends Component {
       permissions = block.permissions || this.props.defaultPermissions;
     }
 
-    return true; // Reaction.hasPermission(permissions || []);
+    return Reaction.hasPermission(permissions || []);
   }
 
   renderLayout(children) {
