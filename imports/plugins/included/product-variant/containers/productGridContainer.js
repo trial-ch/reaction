@@ -46,8 +46,10 @@ const wrapComponent = (Comp) => (
 
         // if some other action view is open, do not hide it
         if (actionView.template === ACTION_VIEW_TEMPLATE) {
-          return Reaction.hideActionView();
+          Reaction.hideActionView();
         }
+        
+        return;
       }
 
       // Save the selected items to the Session
