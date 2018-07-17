@@ -414,18 +414,25 @@ export default {
    * @method
    * @memberof Core
    * @summary returns the shop which should be used given the current domain
+   * @return {StringId} shopId for the current domain
    */
   getShopIdByDomain() {
     const domain = this.getDomain();
+    const primaryShop = this.getPrimaryShop();
+
+    // in cases where the domain could match multiple shops, we first check
+    // whether the primaryShop matches the current domain. If so, we give it
+    // priority
+    if (primaryShop.domains.includes(domain)) {
+      return primaryShop._id;
+    }
+
     const shop = Shops.find({
       domains: domain
     }, {
       limit: 1,
       fields: {
         _id: 1
-      },
-      orderby: {
-        merchantShops: -1 // give preference to PrimaryShop if multiple results
       }
     }).fetch()[0];
 
