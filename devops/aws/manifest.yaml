@@ -1,0 +1,40 @@
+application:
+  name: reaction
+  environments:
+  - name: staging
+    vpc:
+      vpc_cidr: "10.1.0.0/16"
+      private_az_a_cidr: "10.1.0.0/19"
+      private_az_b_cidr: "10.1.64.0/19"
+      private_az_c_cidr: "10.1.128.0/19"
+      public_az_a_cidr: "10.1.32.0/20"
+      public_az_b_cidr: "10.1.96.0/20"
+      public_az_c_cidr: "10.1.160.0/20"
+    ecs:
+      clusters:
+      - type: ecs
+        cluster_size: 2
+        instance_type: t2.medium
+        services:
+        - name: core-service
+          desired_task_count: 2
+          min_task_count: 0
+          max_task_count: 4
+          task-definition:
+            name: core-task-def
+            cpu: 10.1
+            memory: 3600
+            container:
+              name: core
+              image: reactioncommerce/reaction
+              image_tag: release-1.14.0
+              environment:
+                REACTION_AUTH: AWS_SSM
+                REACTION_EMAIL: AWS_SSM
+                REACTION_USER: AWS_SSM
+                ROOT_URL: AWS_SSM
+                MONGO_URL: AWS_SSM
+                MONGO_OPLOG_URL: AWS_SSM
+                CLOUDFRONT_URL: AWS_SSM
+                METEOR_SETTINGS: AWS_SSM
+                SKIP_FIXTURES: 1
